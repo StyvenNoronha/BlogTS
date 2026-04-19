@@ -1,0 +1,11 @@
+services:
+  postgresql:
+    image: bitnami/postgresql:latest
+    container_name: postgres_bitnami
+    restart: always
+    environment:
+      - POSTGRESQL_USERNAME=admin
+      - POSTGRESQL_PASSWORD=admin123
+      - POSTGRESQL_DATABASE=blog
+    ports:
+      - "5432:5432"
