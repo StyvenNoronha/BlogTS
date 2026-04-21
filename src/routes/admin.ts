@@ -10,7 +10,7 @@ adminRoutes.post(
   upload.single("cover"),
   adminController.addPost,
 );
-adminRoutes.get("/posts", privateRoute, adminController.getPosts);
-adminRoutes.get("/posts/:slug", privateRoute, adminController.getPost);
-adminRoutes.put("/posts/:slug", privateRoute, adminController.editPost);
-adminRoutes.delete("/posts/:slug", privateRoute, adminController.removePost);
+adminRoutes.post("/posts", privateRoute, adminController.getPosts);
+//adminRoutes.get("/posts/:slug", privateRoute, adminController.getPost);
+//adminRoutes.put("/posts/:slug", privateRoute, adminController.editPost);
+//adminRoutes.delete("/posts/:slug", privateRoute, adminController.removePost);

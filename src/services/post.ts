@@ -2,7 +2,18 @@ import { v4 } from "uuid";
 import fs from "fs/promises";
 import slug from "slug";
 import { prisma } from "../libs/prisma";
-
+export const getPostBySlug = async (slug: string) => {
+  return await prisma.post.findUnique({
+    where: { slug },
+    include: {
+      author: {
+        select: {
+          name: true,
+        },
+      },
+    },
+  });
+};
 export const handleCover = async (filePath: string) => {
   try {
     const coverName = `${v4()}.jpg`;
@@ -29,15 +40,14 @@ export const createPostSlug = async (title: string) => {
   return newSlug;
 };
 
-export const getPostBySlug = async (slug: string) => {
-  return await prisma.post.findUnique({
-    where: { slug },
-    include: {
-      author: {
-        select: {
-          name: true,
-        },
-      },
-    },
-  });
+type CreatePostProps = {
+  authorId: number;
+  slug: string;
+  title: string;
+  tags: string;
+  body: string;
+  cover: string;
+};
+export const createPost = async (data: CreatePostProps) => {
+  return await prisma.post.create({ data });
 };
