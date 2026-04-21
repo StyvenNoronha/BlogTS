@@ -89,8 +89,25 @@ export const getPosts: RequestHandler = async (request, response) => {
   response.json({posts:postsToReturn, page})
 };
 
-export const getPost: RequestHandler = async (request, response) => {
-  response.json({ rota: "getPost" });
+export const getPost= async (request: ExtendedRequest, response: Response) => {
+  const {slug}= request.params
+
+  const post = await getPostBySlug(String(slug))
+  if(!post){
+    return response.json({error:"Post nao existe"})
+  }
+  response.json({
+    post:{
+      id:post.id,
+      title:post.title,
+      createdAt:post.createdAt,
+      cover: coverToUrl(post.cover),
+      authorName:post.author?.name,
+      tags:post.tags,
+      body:post.body,
+      slug:post.slug
+    }
+  })
 };
 
 export const editPost = async (

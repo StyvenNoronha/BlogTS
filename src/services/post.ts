@@ -24,7 +24,6 @@ export const handleCover = async (filePath: string) => {
     console.error(error);
   }
 };
-
 export const createPostSlug = async (title: string) => {
   let newSlug = slug(title);
   let keepTrying = true;
@@ -40,7 +39,6 @@ export const createPostSlug = async (title: string) => {
   }
   return newSlug;
 };
-
 type CreatePostProps = {
   authorId: number;
   slug: string;
@@ -52,7 +50,6 @@ type CreatePostProps = {
 export const createPost = async (data: CreatePostProps) => {
   return await prisma.post.create({ data });
 };
-
 export const updatePost = async (
   slug: string,
   data: Prisma.PostUpdateInput,
@@ -65,7 +62,6 @@ export const updatePost = async (
 export const deletePost = async (slug: string) => {
   return await prisma.post.delete({ where: { slug } });
 };
-
 export const getALLPosts = async (page: number) => {
   const posts = await prisma.post.findMany({
     include: {
