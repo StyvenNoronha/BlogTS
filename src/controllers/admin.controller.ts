@@ -66,48 +66,48 @@ export const addPost = async (request: ExtendedRequest, response: Response) => {
 };
 
 export const getPosts: RequestHandler = async (request, response) => {
-  let page = 1
-  if(request.query.page){
-    page = parseInt(request.query.page as string)
-    if(page<=0){
-      response.json({error:"Pagina não existe"})
+  let page = 1;
+  if (request.query.page) {
+    page = parseInt(request.query.page as string);
+    if (page <= 0) {
+      response.json({ error: "Pagina não existe" });
     }
   }
 
-  let posts = await getALLPosts(page)
+  let posts = await getALLPosts(page);
 
-  const postsToReturn = posts.map(post=>({
-    id:post.id,
-    title:post.title,
-    createAt:post.createdAt,
-    cover:coverToUrl,
-    author:post.author,
-    tags:post.tags,
-    slug:slug
-  }))
+  const postsToReturn = posts.map((post) => ({
+    id: post.id,
+    title: post.title,
+    createAt: post.createdAt,
+    cover: coverToUrl,
+    author: post.author,
+    tags: post.tags,
+    slug: slug,
+  }));
 
-  response.json({posts:postsToReturn, page})
+  response.json({ posts: postsToReturn, page });
 };
 
-export const getPost= async (request: ExtendedRequest, response: Response) => {
-  const {slug}= request.params
+export const getPost = async (request: ExtendedRequest, response: Response) => {
+  const { slug } = request.params;
 
-  const post = await getPostBySlug(String(slug))
-  if(!post){
-    return response.json({error:"Post nao existe"})
+  const post = await getPostBySlug(String(slug));
+  if (!post) {
+    return response.json({ error: "Post nao existe" });
   }
   response.json({
-    post:{
-      id:post.id,
-      title:post.title,
-      createdAt:post.createdAt,
+    post: {
+      id: post.id,
+      title: post.title,
+      createdAt: post.createdAt,
       cover: coverToUrl(post.cover),
-      authorName:post.author?.name,
-      tags:post.tags,
-      body:post.body,
-      slug:post.slug
-    }
-  })
+      authorName: post.author?.name,
+      tags: post.tags,
+      body: post.body,
+      slug: post.slug,
+    },
+  });
 };
 
 export const editPost = async (
@@ -119,7 +119,7 @@ export const editPost = async (
     status: z.enum(["PUBLISHED", "DRAFT"]).optional(),
     body: string().optional(),
   });
-  
+
   const data = schema.safeParse(request.body);
   if (!data.success) {
     return response.json({ error: data.error.flatten().fieldErrors });
@@ -161,13 +161,13 @@ export const editPost = async (
 };
 
 export const removePost: RequestHandler = async (request, response) => {
-  const {slug}= request.params
+  const { slug } = request.params;
 
-  const post =await getPostBySlug(String(slug));
-  if(!post){
-    return response.json({error:"Post Inexistente"})
+  const post = await getPostBySlug(String(slug));
+  if (!post) {
+    return response.json({ error: "Post Inexistente" });
   }
 
-  await deletePost(post.slug)
-  response.json({error:"Post removido"})
+  await deletePost(post.slug);
+  response.json({ error: "Post removido" });
 };
