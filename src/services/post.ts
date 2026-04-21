@@ -80,7 +80,6 @@ export const getALLPosts = async (page: number) => {
 
   return posts;
 };
-
 export const getALLPostsPublished = async (page: number) => {
   const posts = await prisma.post.findMany({
     where: {
@@ -98,6 +97,40 @@ export const getALLPostsPublished = async (page: number) => {
     },
     take: 5,
     skip: (page - 1) * 5,
+  });
+
+  return posts;
+};
+
+export const getPostsWithSameTags = async (slug: string) => {
+  const post = await prisma.post.findUnique({ where: { slug } });
+  if (!post) return [];
+
+  const tags = post.tags.split(",");
+  if (tags.length === 0) return [];
+
+  const posts = await prisma.post.findMany({
+    where: {
+      status: "PUBLISHED",
+      slug: { not: slug },
+      OR: tags.map((term) => ({
+        tags: {
+          contains: term,
+          mode: "insensitive",
+        },
+      })),
+    },
+    include: {
+      author: {
+        select: {
+          name: true,
+        },
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+    take: 2,
   });
 
   return posts;
