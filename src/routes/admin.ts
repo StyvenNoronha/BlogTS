@@ -12,5 +12,9 @@ adminRoutes.post(
 );
 adminRoutes.post("/posts", privateRoute, adminController.getPosts);
 //adminRoutes.get("/posts/:slug", privateRoute, adminController.getPost);
-//adminRoutes.put("/posts/:slug", privateRoute, adminController.editPost);
-//adminRoutes.delete("/posts/:slug", privateRoute, adminController.removePost);
+adminRoutes.put(
+  "/posts/:slug",
+  privateRoute,
+  upload.single("cover"),
+  adminController.editPost,
+);

@@ -1,7 +1,13 @@
 import { RequestHandler, Response } from "express";
 import { ExtendedRequest } from "../types/extended-request";
-import z from "zod";
-import { createPost, createPostSlug, handleCover } from "../services/post";
+import z, { string } from "zod";
+import {
+  createPost,
+  createPostSlug,
+  getPostBySlug,
+  handleCover,
+  updatePost,
+} from "../services/post";
 import { getUserById } from "../services/user";
 import { coverToUrl } from "../utils/cover-to-url";
 
@@ -64,8 +70,55 @@ export const getPost: RequestHandler = async (request, response) => {
   response.json({ rota: "getPost" });
 };
 
-export const editPost: RequestHandler = async (request, response) => {
-  response.json({ rota: "editPost" });
+export const editPost = async (
+  request: ExtendedRequest,
+  response: Response,
+) => {
+  const { slug } = request.params;
+  const schema = z.object({
+    status: z.enum(["PUBLISHED", "DRAFT"]).optional(),
+    title: string().optional,
+    tags: string().optional,
+    body: string().optional(),
+  });
+  const data = schema.safeParse(request.body);
+  if (!data.success) {
+    return response.json({ error: data.error.flatten().fieldErrors });
+  }
+
+  const post = await getPostBySlug(String(slug));
+  if (!post) {
+    return response.json({ error: "Post Inexistente" });
+  }
+
+  let coverName: string | undefined = undefined;
+  if (request.file) {
+    coverName = await handleCover(String(request.file));
+  }
+
+  const updatedPost = await updatePost(slug, {
+    updatedAt: new Date(),
+    status: data.data.status ?? undefined,
+    title: data.data.title ?? undefined,
+    tags: data.data.tags ?? undefined,
+    body: data.data.body ?? undefined,
+    cover: coverName ? coverName : undefined,
+  });
+
+  const author = await getUserById(updatedPost.authorId);
+
+  response.json({
+    post: {
+      id: updatedPost.id,
+      status: updatedPost.status,
+      slug: updatedPost.slug,
+      title: updatedPost.title,
+      createdAt: updatedPost.createdAt,
+      cover: coverToUrl(updatedPost.cover),
+      tags: updatedPost.tags,
+      authorName: author?.name,
+    },
+  });
 };
 
 export const removePost: RequestHandler = async (request, response) => {
