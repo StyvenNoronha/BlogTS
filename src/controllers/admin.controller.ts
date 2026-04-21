@@ -77,10 +77,9 @@ export const editPost = async (
   const { slug } = request.params;
   const schema = z.object({
     status: z.enum(["PUBLISHED", "DRAFT"]).optional(),
-    title: string().optional,
-    tags: string().optional,
     body: string().optional(),
   });
+  
   const data = schema.safeParse(request.body);
   if (!data.success) {
     return response.json({ error: data.error.flatten().fieldErrors });
