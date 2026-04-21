@@ -98,8 +98,8 @@ export const editPost = async (
   const updatedPost = await updatePost(slug, {
     updatedAt: new Date(),
     status: data.data.status ?? undefined,
-    title: data.data.title ?? undefined,
-    tags: data.data.tags ?? undefined,
+    //title: data.data.title ?? undefined,
+    //tags: data.data.tags ?? undefined,
     body: data.data.body ?? undefined,
     cover: coverName ? coverName : undefined,
   });
