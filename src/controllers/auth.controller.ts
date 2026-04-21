@@ -1,7 +1,8 @@
-import { RequestHandler } from "express";
+import { RequestHandler, Response } from "express";
 import { z } from "zod";
 import { createUser, verifyUser } from "../services/user";
 import { createToken } from "../services/auth";
+import { ExtendedRequest } from "../types/extended-request";
 
 export const signup: RequestHandler = async (request, response) => {
   //verificar com zod se esta certo
@@ -67,6 +68,6 @@ export const signin: RequestHandler = async (request, response) => {
   });
 };
 
-export const validate: RequestHandler = async (request, response) => {
-  response.json({ rota: "validate" });
+export const validate= async (request:ExtendedRequest, response:Response) => {
+  response.json({user: request.user})
 };
