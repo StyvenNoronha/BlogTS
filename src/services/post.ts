@@ -78,5 +78,27 @@ export const getALLPosts = async (page: number) => {
     skip: (page - 1) * 5,
   });
 
-  return posts
+  return posts;
+};
+
+export const getALLPostsPublished = async (page: number) => {
+  const posts = await prisma.post.findMany({
+    where: {
+      status: "PUBLISHED",
+    },
+    include: {
+      author: {
+        select: {
+          name: true,
+        },
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+    take: 5,
+    skip: (page - 1) * 5,
+  });
+
+  return posts;
 };
