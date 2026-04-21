@@ -4,6 +4,7 @@ import z, { string } from "zod";
 import {
   createPost,
   createPostSlug,
+  deletePost,
   getPostBySlug,
   handleCover,
   updatePost,
@@ -121,5 +122,13 @@ export const editPost = async (
 };
 
 export const removePost: RequestHandler = async (request, response) => {
-  response.json({ rota: "removePost" });
+  const {slug}= request.params
+
+  const post =await getPostBySlug(String(slug));
+  if(!post){
+    return response.json({error:"Post Inexistente"})
+  }
+
+  await deletePost(post.slug)
+  response.json({error:"Post removido"})
 };

@@ -53,7 +53,6 @@ export const createPost = async (data: CreatePostProps) => {
   return await prisma.post.create({ data });
 };
 
-
 export const updatePost = async (
   slug: string,
   data: Prisma.PostUpdateInput,
@@ -62,4 +61,7 @@ export const updatePost = async (
     where: { slug },
     data,
   });
+};
+export const deletePost = async (slug: string) => {
+  return await prisma.post.delete({ where: { slug } });
 };
