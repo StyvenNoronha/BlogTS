@@ -65,3 +65,22 @@ export const updatePost = async (
 export const deletePost = async (slug: string) => {
   return await prisma.post.delete({ where: { slug } });
 };
+
+export const getALLPosts = async (page: number) => {
+  const posts = await prisma.post.findMany({
+    include: {
+      author: {
+        select: {
+          name: true,
+        },
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+    take: 5,
+    skip: (page - 1) * 5,
+  });
+
+  return posts
+};
